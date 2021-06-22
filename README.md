@@ -20,7 +20,7 @@ sudo apt install build-essential
 ```
 - その他必要なライブラリ
 ```
-sudo apt install -y libbz2-dev libreadline-dev libssl-dev libsqlite3-dev
+sudo apt install -y libbz2-dev libreadline-dev libssl-dev libsqlite3-dev cmake
 ```
 - pyenv virtualenv python環境インストール
 ```
@@ -53,6 +53,26 @@ cd ffmpeg-4.3.2
 make -j8
 sudo make install
 ```
+- Avidemuxのインストール
+```
+sudo add-apt-repository ppa:rock-core/qt4
+sudo apt install libqt4-dev
+sudo apt install qttools5-dev-tools qtbase5-dev
+sudo apt install libasound2-dev
+sudo apt install sqlite libsqlite-dev
+cd ~/tools
+wget https://sourceforge.net/projects/avidemux/files/avidemux/2.7.8/avidemux_2.7.8.tar.gz
+tar -zxvf avidemux_2.7.8.tar.gz
+cd avidemux_2.7.8
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
+bash bootStrap.bash
+sudo cp -R install/usr/* /usr/ **
+```
+- Avidemuxの動作確認
+```
+avidemux3_cli
+```
+- いろいろと出てくればOK
 
 - pyenvディレクトリ作成
 ```
