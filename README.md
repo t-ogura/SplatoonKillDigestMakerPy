@@ -33,8 +33,28 @@ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
 source ~/.bashrc
 CONFIGURE_OPTS=--enable-shared pyenv install 3.9.5
 ```
-- pyenvディレクトリ作成
+- ffmpegインストール
+```
+sudo apt install yasm
+cd ~
+mkdir ~/tools
+cd ~/tools
+wget http://pkgconfig.freedesktop.org/releases/pkg-config-0.29.2.tar.gz
+tar -zxvf pkg-config-0.29.2.tar.gz
+cd cd pkg-config-0.29.2
+./configure --with-internal-glib
+make -j8
+sudo make install
+cd ~/tools
+wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/ffmpeg/7:4.3.2-0+deb11u2ubuntu1/ffmpeg_4.3.2.orig.tar.xz
+tar Jxfv ffmpeg_4.3.2.orig.tar.xz
+cd ffmpeg-4.3.2
+./configure --enable-shared --disable-gpl --enable-version3
+make -j8
+sudo make install
+```
 
+- pyenvディレクトリ作成
 ```
 mkdir ~/workspace
 cd workspace
