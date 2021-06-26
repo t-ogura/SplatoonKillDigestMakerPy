@@ -8,21 +8,21 @@ Python version of the SplatoonKillDigestMaker
 
 
 # 環境構築メモ
-### 自分の環境構築時の手順を記載しておく
+- 自分の環境構築時の手順を記載しておく
 - WSL2およびUbuntuはインストール済みとする
-- gitのインストール
+### gitのインストール
 ```
 sudo apt install git
 ```
-- コンパイラインストール
+### コンパイラインストール
 ```
 sudo apt install build-essential
 ```
-- その他必要なライブラリ
+### その他必要なライブラリ
 ```
 sudo apt install -y libbz2-dev libreadline-dev libssl-dev libsqlite3-dev cmake
 ```
-- pyenv virtualenv python環境インストール
+### pyenv virtualenv python環境インストール
 ```
 git clone https://github.com/yyuu/pyenv.git ~/.pyenv
 git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
@@ -35,7 +35,7 @@ echo 'export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib;' >> ~/.bashrc
 source ~/.bashrc
 CONFIGURE_OPTS=--enable-shared pyenv install 3.9.5
 ```
-- ffmpegインストール
+### ffmpegインストール
 ```
 sudo apt install yasm libx264-dev libx265-dev
 cd ~
@@ -56,7 +56,7 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
 make -j8
 sudo make install
 ```
-- ~~Avidemuxのインストール~~ (現versionでは未使用)
+### ~~Avidemuxのインストール~~ (現versionでは未使用)
 ```
 sudo add-apt-repository ppa:rock-core/qt4
 sudo apt install libqt4-dev
@@ -77,7 +77,7 @@ avidemux3_cli
 ```
 - ~~いろいろと出てくればOK~~ (現versionでは未使用)
 
-- pyenvディレクトリ作成
+### pyenvディレクトリ作成
 ```
 mkdir ~/workspace
 cd workspace
@@ -86,9 +86,13 @@ cd SplatoonKillDigestMakerPy
 pyenv virtualenv 3.9.5 KDM
 pyenv local KDM
 ```
-- python環境構築
+### python環境構築
 ```
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+## nvencを使うためのヒント
+- https://qiita.com/yamakenjp/items/7474f210efd82bb28490
+- https://takake-blog.com/wsl-nvidia-cuda/
+- https://qiita.com/ksasaki/items/ee864abd74f95fea1efa
