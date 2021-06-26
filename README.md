@@ -31,12 +31,13 @@ echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
 echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.bashrc
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib;' >> ~/.bashrc
 source ~/.bashrc
 CONFIGURE_OPTS=--enable-shared pyenv install 3.9.5
 ```
 - ffmpegインストール
 ```
-sudo apt install yasm
+sudo apt install yasm libx264-dev libx265-dev
 cd ~
 mkdir ~/tools
 cd ~/tools
@@ -50,11 +51,12 @@ cd ~/tools
 wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/ffmpeg/7:4.3.2-0+deb11u2ubuntu1/ffmpeg_4.3.2.orig.tar.xz
 tar Jxfv ffmpeg_4.3.2.orig.tar.xz
 cd ffmpeg-4.3.2
-./configure --enable-shared --disable-gpl --enable-version3
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
+./configure --enable-shared --enable-gpl --enable-version3 --enable-libx264 --enable-libx265
 make -j8
 sudo make install
 ```
-- Avidemuxのインストール
+- ~~Avidemuxのインストール~~ (現versionでは未使用)
 ```
 sudo add-apt-repository ppa:rock-core/qt4
 sudo apt install libqt4-dev
@@ -69,11 +71,11 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
 bash bootStrap.bash
 sudo cp -R install/usr/* /usr/ **
 ```
-- Avidemuxの動作確認
+-  ~~Avidemuxの動作確認~~ (現versionでは未使用)
 ```
 avidemux3_cli
 ```
-- いろいろと出てくればOK
+- ~~いろいろと出てくればOK~~ (現versionでは未使用)
 
 - pyenvディレクトリ作成
 ```
