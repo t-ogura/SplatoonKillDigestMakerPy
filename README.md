@@ -118,7 +118,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## nvencを使うためのヒント
+## nvencを使うためのヒント (上級者向け)
 - https://qiita.com/yamakenjp/items/7474f210efd82bb28490
 - https://takake-blog.com/wsl-nvidia-cuda/
 - https://qiita.com/ksasaki/items/ee864abd74f95fea1efa
