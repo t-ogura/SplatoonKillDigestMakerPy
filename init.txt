@@ -1,0 +1,51 @@
+﻿## パラメータ ##
+
+# テンプレート検出の閾値
+TAMPLATE_MATCHING_THRESHOLD 0.85
+
+# キルの前の何秒間から採用するか
+ADDITIONAL_TIME_BEFORE_KILL 2.5
+
+# キルシーンを後ろに延長したい場合は何秒足したいか
+ADDITIONAL_TIME_AFTER_KILL 0.0
+
+# 連続キルの時　何秒までつなげるか
+CONNECTING_INTERVAL 4.0
+
+# 誤認識を防ぐため，何フレーム連続して検出したら採用するか（推奨：5.0）
+CANDIDATE_FRAME_NUM 5.0
+
+# 何秒ごとにフレームを検索するか
+SEARCHING_FRAME_INTERVAL 1.0
+
+# カット編集でエンコードするか (0 or 1) 
+# エンコードしないとカット位置があいまいになります
+# Python版では「1」固定
+CUT_OUT_ENCORD 1
+
+# 接合編集でエンコードするか (0 or 1)
+# エンコードしないと切り替わり時たまに不具合が起きます
+CONCATENATION_ENCORD 0
+
+# カット編集をスキップするか (0 or 1)
+SKIP_CUT_OUT 0
+
+# 接合編集をスキップするか (0 or 1)
+SKIP_CONCATENATION 0
+
+# 出力動画のサイズを指定するか (0 or 1)
+MOVIE_SIZE_DESIGNATION 0
+
+# 出力動画のサイズを指定した場合の動画の縦のサイズ
+MOVIE_SIZE_HEIGHT 1080
+
+# 勝利シーンの切り抜きをするか (Python版は未実装)
+WIN_DETECTION 0
+
+# 敗北シーンの切り抜きをするか (Python版は未実装)
+LOSE_DETECTION 0
+
+# エンコードに使うコーデック
+# libx264 圧縮率〇 エンコード速度〇 画質〇
+# libx265 圧縮率◎ エンコード速度△ 画質◎
+VIDEO_CODEC libx264
