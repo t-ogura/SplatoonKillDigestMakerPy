@@ -5,7 +5,22 @@ Python version of the SplatoonKillDigestMaker
 - Ubuntu 20.04 on wsl2
 - Python 3.6.13
 
+# 使用方法
+## 準備
+### ローカルのファイルを使用する場合
+- 動画ファイルをTargetFilesの中に入れる
 
+### Youtubeの動画を使用する場合
+- youtube_url.txtにYouTubeのURLを貼り付ける
+- 複数行に対応。最後に改行を入れること
+
+## 実行方法
+```
+python3 kill_digest_maker.py
+```
+
+### To do: 
+- 引数で入力を与えられるようにする
 
 # 環境構築メモ
 - 自分の環境構築時の手順を記載しておく
