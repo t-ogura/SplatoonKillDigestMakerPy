@@ -11,6 +11,11 @@ Visual Studioの度重なるバージョン変更により、プログラムの�
 - Ubuntu 20.04 on wsl2
 - Python 3.6.13
 
+### WSL2でUbuntu 20.04をインストールするための参考になりそうなサイト
+- https://qiita.com/whim0321/items/ed76b490daaec152dc69
+- https://www.kkaneko.jp/tools/wsl/wsl2.html
+- (私はこの方法でやってないので保証できません・・・。）
+
 # 使用方法
 ## 準備
 ### ローカルのファイルを使用する場合
