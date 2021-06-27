@@ -3,8 +3,9 @@ Python version of the SplatoonKillDigestMaker
 
 ## 概要
 　SplatoonKillDigestMakerはスプラトゥーン2で撮り溜めた動画を何とか供養したいという思いで作られた、キルシーン自動生成プログラムです。
-　古典的なテンプレートマッチング手法を使ってキルシーンを切り出し、自動で動画編集します。
-　SplatoonKillDigestMakerはもともとWindows上のVisual Studioを用いてC++で開発されていましたが、Visual Studioの度重なるバージョン変更により、プログラムの保守が難しくなったため、Pythonバージョンに新たに移行しました。
+古典的なテンプレートマッチング手法を使ってキルシーンを切り出し、自動で動画編集します。
+SplatoonKillDigestMakerはもともとWindows上のVisual Studioを用いてC++で開発されていましたが、
+Visual Studioの度重なるバージョン変更により、プログラムの保守が難しくなったため、Pythonバージョンに新たに移行しました。
 
 # 環境
 - Ubuntu 20.04 on wsl2
