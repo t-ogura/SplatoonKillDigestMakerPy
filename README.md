@@ -46,7 +46,7 @@ sudo apt install -y build-essential
 ```
 ### その他必要なライブラリ
 ```
-sudo apt install -y libbz2-dev libreadline-dev libssl-dev libsqlite3-dev cmake
+sudo apt install -y wget libbz2-dev libreadline-dev libssl-dev libsqlite3-dev cmake
 ```
 ### pyenv virtualenv python環境インストール
 ```
