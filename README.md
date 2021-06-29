@@ -124,6 +124,14 @@ pip install -r requirements.txt
 Docker環境では、libopencv-devのインストールが必要なようです。
 （はりぃ様情報提供ありがとうございます。）
 
+# FAQ
+### キルシーンを一部検出できていない
+　元動画の画質が悪い場合正しく検出できないことがあります。
+「init.txt」にあるTAMPLATE_MATCHING_THRESHOLDの値を低くすることで、
+今まで検出できなかったものが検出できるようになる場合があります。
+ただし下げ過ぎると誤検出が増えるので注意。
+推奨は0.80～0.85程度になります。
+
 ## nvencを使うためのヒント (上級者向け)
 - https://qiita.com/yamakenjp/items/7474f210efd82bb28490
 - https://takake-blog.com/wsl-nvidia-cuda/
