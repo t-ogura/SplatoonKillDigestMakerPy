@@ -121,7 +121,7 @@ pip install -r requirements.txt
 ```
 
 ### Docker環境について
-Docker環境では、wget pip libopencv-devのインストールが必要なようです。
+Docker環境では、libopencv-devのインストールが必要なようです。
 （はりぃ様情報提供ありがとうございます。）
 
 ## nvencを使うためのヒント (上級者向け)
