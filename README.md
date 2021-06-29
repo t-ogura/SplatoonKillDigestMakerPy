@@ -118,6 +118,10 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+### Docker環境について
+Docker環境では、wget pip libopencv-devのインストールが必要なようです。
+（はりぃ様情報提供ありがとうございます。）
+
 ## nvencを使うためのヒント (上級者向け)
 - https://qiita.com/yamakenjp/items/7474f210efd82bb28490
 - https://takake-blog.com/wsl-nvidia-cuda/
