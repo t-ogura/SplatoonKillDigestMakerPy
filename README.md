@@ -59,7 +59,7 @@ echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nf
 echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
 echo 'export LD_LIBRARY_PATH=/usr/local/lib:/usr/lib;' >> ~/.bashrc
 source ~/.bashrc
-CONFIGURE_OPTS=--enable-shared pyenv install 3.9.5
+CONFIGURE_OPTS=--enable-shared pyenv install 3.6.13
 ```
 ### ffmpegインストール
 ```
@@ -109,7 +109,7 @@ mkdir ~/workspace
 cd workspace
 git clone https://github.com/t-ogura/SplatoonKillDigestMakerPy.git
 cd SplatoonKillDigestMakerPy
-pyenv virtualenv 3.9.5 KDM
+pyenv virtualenv 3.6.13 KDM
 pyenv local KDM
 ```
 ### python環境構築
