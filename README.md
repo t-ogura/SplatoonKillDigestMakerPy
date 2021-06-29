@@ -38,11 +38,11 @@ python3 kill_digest_maker.py
 - WSL2およびUbuntuはインストール済みとする
 ### gitのインストール
 ```
-sudo apt install git
+sudo apt install -y git
 ```
 ### コンパイラインストール
 ```
-sudo apt install build-essential
+sudo apt install -y build-essential
 ```
 ### その他必要なライブラリ
 ```
@@ -63,7 +63,7 @@ CONFIGURE_OPTS=--enable-shared pyenv install 3.6.13
 ```
 ### ffmpegインストール
 ```
-sudo apt install yasm libx264-dev libx265-dev
+sudo apt install -y yasm libx264-dev libx265-dev
 cd ~
 mkdir ~/tools
 cd ~/tools
@@ -106,7 +106,7 @@ avidemux3_cli
 ### pyenvディレクトリ作成
 ```
 mkdir ~/workspace
-cd workspace
+cd ~/workspace
 git clone https://github.com/t-ogura/SplatoonKillDigestMakerPy.git
 cd SplatoonKillDigestMakerPy
 pyenv virtualenv 3.6.13 KDM
