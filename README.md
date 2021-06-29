@@ -114,6 +114,8 @@ pyenv local KDM
 ```
 ### python環境構築
 ```
+sudo apt install pip
+cd ~/workspace/SplatoonKillDigestMakerPy
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
