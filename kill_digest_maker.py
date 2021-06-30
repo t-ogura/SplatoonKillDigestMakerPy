@@ -82,7 +82,7 @@ def main():
     download_youtube_file()
 
     if int(param["SKIP_CUT_OUT"]) == 0:
-        target_files=glob.glob("./" + args.input_folder_name + "/**.*", recursive=True)
+        target_files=sorted(glob.glob("./" + args.input_folder_name + "/**.*", recursive=True))
         print(target_files)
 
         if os.path.isdir('./temp'):
@@ -104,6 +104,10 @@ def main():
             max_height_size = int(param["MOVIE_SIZE_HEIGHT"])
         
         template = cv2.imread("templates/template.jpg")
+        if int(param["WIN_DETECTION"]) == 1:
+            win_template = cv2.imread("templates/win_template.jpg")
+        if int(param["LOSE_DETECTION"]) == 1:
+            lose_template = cv2.imread("templates/lose_template.jpg")
         out_file_count=0
 
         for video_id, video_file_name in enumerate(target_files):
@@ -115,6 +119,8 @@ def main():
             temp_scale = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) / 1080.0
 
             key_frames = []
+            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                key_result_frames = []
             i = 0
             while(cap):
                 i+=1
@@ -136,24 +142,82 @@ def main():
                     print(" Kill scene detected!!!", end='')
                     key_frames.append(i)
                     # cv2.imwrite("debug.jpg", frame_rect)
+
+                if int(param["WIN_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                    frame_win = frame[int(54.0 * temp_scale): int((54.0 + 74.0) * temp_scale), \
+                        int(36.0 * temp_scale): int((36.0 + 206.0) * temp_scale)]
+                    result_win = cv2.matchTemplate(frame_win, win_template, cv2.TM_CCORR_NORMED)
+                    _, max_val, _, _ =  cv2.minMaxLoc(result_win)
+                    if (max_val > float(param["TAMPLATE_MATCHING_THRESHOLD"])):
+                        print(" Win scene detected!!!", end='')
+                        key_result_frames.append(i)
+
+                if int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                    frame_lose = frame[int(64.0 * temp_scale): int((64.0 + 68.0) * temp_scale), \
+                        int(32.0 * temp_scale): int((32.0 + 268.0) * temp_scale)]
+                    result_lose = cv2.matchTemplate(frame_lose, lose_template, cv2.TM_CCORR_NORMED)
+                    _, max_val, _, _ =  cv2.minMaxLoc(result_lose)
+                    if (max_val > float(param["TAMPLATE_MATCHING_THRESHOLD"])):
+                        print(" Lose scene detected!!!", end='')
+                        key_result_frames.append(i)
+
                 print("")
             
             key_frame_group = []
-            if len(key_frames) < 2:
-                continue
-            prev_value = key_frames[0]
-            local_key_frames = []
-            local_key_frames.append(prev_value)
-            for value in key_frames[1:]:
-                if value - prev_value > fps * float(param["CONNECTING_INTERVAL"]) * float(param["SEARCHING_FRAME_INTERVAL"]):
+            if len(key_frames) > 1:
+                prev_value = key_frames[0]
+                local_key_frames = []
+                local_key_frames.append(prev_value)
+                for value in key_frames[1:]:
+                    if value - prev_value > fps * float(param["CONNECTING_INTERVAL"]) * float(param["SEARCHING_FRAME_INTERVAL"]):
+                        key_frame_group.append(local_key_frames)
+                        local_key_frames = []
+                    local_key_frames.append(value)
+                    prev_value = value
+                if len(local_key_frames) > 0:
                     key_frame_group.append(local_key_frames)
+                for local in key_frame_group:
+                    print("key frame: ",local)
+
+            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                key_result_frame_group = []
+                if len(key_result_frames) > 1:
+                    prev_value = key_result_frames[0]
                     local_key_frames = []
-                local_key_frames.append(value)
-                prev_value = value
-            if len(local_key_frames) > 0:
-                key_frame_group.append(local_key_frames)
-            for local in key_frame_group:
-                print("key frame: ",local)
+                    local_key_frames.append(prev_value)
+                    for value in key_result_frames[1:]:
+                        if value - prev_value > fps * 2.0 * float(param["SEARCHING_FRAME_INTERVAL"]):
+                            key_result_frame_group.append(local_key_frames)
+                            local_key_frames = []
+                        local_key_frames.append(value)
+                        prev_value = value
+                    if len(local_key_frames) > 0:
+                        key_result_frame_group.append(local_key_frames)
+
+                for index in range(len(key_result_frame_group)):
+                    key_result_frame_group[index].insert(0, int(key_result_frame_group[index][0] \
+                        + float(param["ADDITIONAL_TIME_BEFORE_KILL"]) * fps - 2.5))
+                    key_result_frame_group[index].append(int(key_result_frame_group[index][-1] \
+                        - float(param["ADDITIONAL_TIME_AFTER_KILL"]) * fps - 0.5))
+                        
+                if int(param["SHOW_RESULT"] == 1):
+                    new_key_result_frame_group = []
+                    for group in key_result_frame_group:
+                        if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1:
+                            new_key_result_frame_group.append(group)
+                        new_key_result_frame_group.append([int(x + 5 * fps) for x in group])
+                    key_result_frame_group = new_key_result_frame_group
+
+                for local in key_result_frame_group:
+                    print("key result frame: ",local)
+
+                if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                    key_frame_group.extend(key_result_frame_group)
+                    key_frame_group = sorted(key_frame_group, key=lambda x: x[0])
+
+                for local in key_frame_group:
+                    print("key frame: ",local)
+
             cap.release()
 
             # movie cut out
@@ -179,7 +243,7 @@ def main():
                 
 
     if int(param["SKIP_CONCATENATION"]) == 0:
-        file_list = glob.glob("temp/*.mp4")
+        file_list = sorted(glob.glob("temp/*.mp4"))
         with open("./temp/file_list.txt", "w") as f:
             f.write("\n".join([f"file '{os.path.basename(line)}'" for line in file_list]))
         

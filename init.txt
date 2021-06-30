@@ -45,6 +45,9 @@ WIN_DETECTION 0
 # 敗北シーンの切り抜きをするか (Python版は未実装)
 LOSE_DETECTION 0
 
+# リザルト画面を出すか
+SHOW_RESULT 0
+
 # エンコードに使うコーデック
 # libx264 圧縮率〇 エンコード速度〇 画質〇
 # libx265 圧縮率◎ エンコード速度△ 画質◎
