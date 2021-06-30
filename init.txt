@@ -12,7 +12,7 @@ ADDITIONAL_TIME_AFTER_KILL 0.0
 # 連続キルの時　何秒までつなげるか
 CONNECTING_INTERVAL 4.0
 
-# 誤認識を防ぐため，何フレーム連続して検出したら採用するか（推奨：5.0）
+# 誤認識を防ぐため，何秒連続して検出したら採用するか（推奨：5.0）
 CANDIDATE_FRAME_NUM 5.0
 
 # 何秒ごとにフレームを検索するか
