@@ -132,6 +132,28 @@ Docker環境では、libopencv-devのインストールが必要なようです�
 ただし下げ過ぎると誤検出が増えるので注意。
 推奨は0.80～0.85程度になります。
 
+### 連続キルのシーンだけ抽出したい（1体キルは無視したい）
+　「init.txt」にあるCANDIDATE_FRAME_NUMを5.0より大きく（5.1, 6.0等）にすると、
+単独キルの検出が誤認識扱いとされ、連続キルのシーンのみ抽出が出来るようになります。
+ただし、同時に2体倒した等のシーンは単独キルと同様に5秒間しか表示がないため、
+連続キルとしての抽出にはなりません。
+
+### キルシーンの切り出しの時間長を長く（短く）したい
+　「init.txt」にあるADDITIONAL_TIME_BEFORE_KILLとADDITIONAL_TIME_AFTER_KILLを調節してみてください。
+その場合、この2つの値の合計値がCONNECTING_INTERVALより大きくならないように気を付けてください。
+CONNECTING_INTERVALの値を超えてしまうと、完成動画でまれに時間の巻き戻りが起きます。
+その場合はCONNECTING_INTERVALの値を大きくして調整してください。
+
+### エンコードのコーデックを指定したい
+　「init.txt」にあるVIDEO_CODECで指定することが可能です。
+ffmpegで利用可能なコーデックを指定できます。
+ただし、デフォルトでffmpegに搭載されているコーデック以外は、
+ffmpegの環境構築時に設定する必要があります。
+上記の環境構築例では、libx264のほかにlibx265が使えるようにしていますので、ご活用ください。
+MicrosoftのInsider Programのdevチャネルに加入しているとWSL2でもnvenc使えそうですよ。（上級者向け）
+あとはWSL2からWindows環境のコマンドが実行できるらしいので、
+うまく活用すればグラボを使ったエンコードが出来そうですね。（上級者向け）
+
 ## nvencを使うためのヒント (上級者向け)
 - https://qiita.com/yamakenjp/items/7474f210efd82bb28490
 - https://takake-blog.com/wsl-nvidia-cuda/
