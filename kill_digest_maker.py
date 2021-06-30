@@ -119,7 +119,7 @@ def main():
             temp_scale = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) / 1080.0
 
             key_frames = []
-            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
                 key_result_frames = []
             i = 0
             while(cap):
@@ -143,7 +143,7 @@ def main():
                     key_frames.append(i)
                     # cv2.imwrite("debug.jpg", frame_rect)
 
-                if int(param["WIN_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                if int(param["WIN_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
                     frame_win = frame[int(54.0 * temp_scale): int((54.0 + 74.0) * temp_scale), \
                         int(36.0 * temp_scale): int((36.0 + 206.0) * temp_scale)]
                     result_win = cv2.matchTemplate(frame_win, win_template, cv2.TM_CCORR_NORMED)
@@ -152,7 +152,7 @@ def main():
                         print(" Win scene detected!!!", end='')
                         key_result_frames.append(i)
 
-                if int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                if int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
                     frame_lose = frame[int(64.0 * temp_scale): int((64.0 + 68.0) * temp_scale), \
                         int(32.0 * temp_scale): int((32.0 + 268.0) * temp_scale)]
                     result_lose = cv2.matchTemplate(frame_lose, lose_template, cv2.TM_CCORR_NORMED)
@@ -179,7 +179,7 @@ def main():
                 for local in key_frame_group:
                     print("key frame: ",local)
 
-            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+            if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
                 key_result_frame_group = []
                 if len(key_result_frames) > 1:
                     prev_value = key_result_frames[0]
@@ -200,7 +200,7 @@ def main():
                     key_result_frame_group[index].append(int(key_result_frame_group[index][-1] \
                         - float(param["ADDITIONAL_TIME_AFTER_KILL"]) * fps - 0.5))
                         
-                if int(param["SHOW_RESULT"] == 1):
+                if int(param["SHOW_RESULT"]) == 1:
                     new_key_result_frame_group = []
                     for group in key_result_frame_group:
                         if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1:
@@ -211,7 +211,7 @@ def main():
                 for local in key_result_frame_group:
                     print("key result frame: ",local)
 
-                if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"] == 1):
+                if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
                     key_frame_group.extend(key_result_frame_group)
                     key_frame_group = sorted(key_frame_group, key=lambda x: x[0])
 
