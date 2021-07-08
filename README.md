@@ -164,6 +164,24 @@ MicrosoftのInsider Programのdevチャネルに加入しているとWSL2でもn
 うまく活用すればグラボを使ったエンコードが出来そうですね。（上級者向け）
 
 ## nvencを使うためのヒント (上級者向け)
-- https://qiita.com/yamakenjp/items/7474f210efd82bb28490
-- https://takake-blog.com/wsl-nvidia-cuda/
+### WSL2でCUDAをセットアップ
+こちらを参考にした
 - https://qiita.com/ksasaki/items/ee864abd74f95fea1efa
+
+### Windows Insider Programでdevチャネルを選択できない場合
+- TPM2.0が有効になっていないことが原因かも
+- 自分の環境の場合BIOS画面から有効にすることができた
+
+### ffpmegでnvencを使うために
+こちらを参考にした
+- https://qiita.com/yamakenjp/items/7474f210efd82bb28490
+
+### ffmpegの./configureについて
+- 最終的にこれで落ち着きそう
+```
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
+./configure --enable-shared --enable-gpl --enable-libx264 --enable-libx265 --enable-cuda-nvcc --enable-cuvid --enable-nvenc --enable-nonfree --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --enable-libsnappy --enable-openssl --nvccflags="-gencode arch=compute_75,code=sm_75 -O2"
+```
+- 理由はよくわからないけどこれでうまくいきそうだった
+- 参考：https://github.com/NVIDIA/cuda-samples/issues/46
+
