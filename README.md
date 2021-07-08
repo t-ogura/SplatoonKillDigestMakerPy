@@ -24,6 +24,11 @@ Visual Studioの度重なるバージョン変更により、プログラムの�
 ### Youtubeの動画を使用する場合
 - youtube_url.txtにYouTubeのURLを貼り付ける
 - 複数行に対応。最後に改行を入れること
+- ダウンロードの終了したファイルはTargetFilesに置かれています
+
+### 2回目以降の実行時
+- TargetFilesの中身に、対象にしたい動画以外の動画が入っていないか確認する
+- 対象ではない動画が入っていた場合は削除か他のディレクトリに移動する
 
 ## 実行方法
 ```
@@ -134,6 +139,10 @@ Docker環境では、libopencv-devのインストールが必要なようです�
 　また可変フレームレートの動画の場合、正しい位置でキルシーンを切り出せません。
 現在対応中ですが、固定フレームレートの動画に変換することで解決できそうです。
 
+　※可変フレームレートの動画の場合、正しい位置でキルシーンを切り出せない不具合を確認しています。
+現在対応中ですが、固定フレームレートの動画に変換することで解決できそうです。
+こちらで対応中です。https://github.com/t-ogura/SplatoonKillDigestMakerPy/issues/1
+
 ### 連続キルのシーンだけ抽出したい（1体キルは無視したい）
 　「init.txt」にあるCANDIDATE_FRAME_NUMを5.0より大きく（5.1, 6.0等）にすると、
 単独キルの検出が誤認識扱いとされ、連続キルのシーンのみ抽出が出来るようになります。
@@ -157,6 +166,24 @@ MicrosoftのInsider Programのdevチャネルに加入しているとWSL2でもn
 うまく活用すればグラボを使ったエンコードが出来そうですね。（上級者向け）
 
 ## nvencを使うためのヒント (上級者向け)
-- https://qiita.com/yamakenjp/items/7474f210efd82bb28490
-- https://takake-blog.com/wsl-nvidia-cuda/
+### WSL2でCUDAをセットアップ
+こちらを参考にした
 - https://qiita.com/ksasaki/items/ee864abd74f95fea1efa
+
+### Windows Insider Programでdevチャネルを選択できない場合
+- TPM2.0が有効になっていないことが原因かも
+- 自分の環境の場合BIOS画面から有効にすることができた
+
+### ffpmegでnvencを使うために
+こちらを参考にした
+- https://qiita.com/yamakenjp/items/7474f210efd82bb28490
+
+### ffmpegの./configureについて
+- 最終的にこれで落ち着きそう
+```
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/x86_64-linux-gnu/pkgconfig
+./configure --enable-shared --enable-gpl --enable-libx264 --enable-libx265 --enable-cuda-nvcc --enable-cuvid --enable-nvenc --enable-nonfree --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --enable-libsnappy --enable-openssl --nvccflags="-gencode arch=compute_75,code=sm_75 -O2"
+```
+- 理由はよくわからないけどこれでうまくいきそうだった
+- 参考：https://github.com/NVIDIA/cuda-samples/issues/46
+
