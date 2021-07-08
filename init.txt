@@ -1,7 +1,7 @@
 ﻿## パラメータ ##
 
 # テンプレート検出の閾値
-TAMPLATE_MATCHING_THRESHOLD 0.85
+TAMPLATE_MATCHING_THRESHOLD 0.84
 
 # キルの前の何秒間から採用するか
 ADDITIONAL_TIME_BEFORE_KILL 2.5
@@ -39,16 +39,17 @@ MOVIE_SIZE_DESIGNATION 0
 # 出力動画のサイズを指定した場合の動画の縦のサイズ
 MOVIE_SIZE_HEIGHT 1080
 
-# 勝利シーンの切り抜きをするか (Python版は未実装)
-WIN_DETECTION 0
+# 勝利シーンの切り抜きをするか
+WIN_DETECTION 1
 
-# 敗北シーンの切り抜きをするか (Python版は未実装)
-LOSE_DETECTION 0
+# 敗北シーンの切り抜きをするか
+LOSE_DETECTION 1
 
 # リザルト画面を出すか
-SHOW_RESULT 0
+SHOW_RESULT 1
 
 # エンコードに使うコーデック
 # libx264 圧縮率〇 エンコード速度〇 画質〇
 # libx265 圧縮率◎ エンコード速度△ 画質◎
+# NVENC on WSL2の環境が整っていれば hevc_nvenc も使えます
 VIDEO_CODEC libx264

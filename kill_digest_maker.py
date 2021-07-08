@@ -71,6 +71,50 @@ def make_py_file(video_file_name, A, B, python_file_name="avidemux_cli_run.py"):
         f.write("adm.markerA = " + str(A * 1000000) +"\n")
         f.write("adm.markerB = " + str(B * 1000000) +"\n")
 
+def get_cmd_lines(cmd):
+    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    while True:
+        line = proc.stdout.readline()
+        if line:
+            yield line
+
+        if not line and proc.poll() is not None:
+            break
+
+def check_vfr(file_name):
+    cmd = "ffmpeg -ss 0 -i " + file_name + " -t 60 -an -vf vfrdet -f null -"
+    lines = []
+    for line in get_cmd_lines(cmd):
+        # print(line.strip().decode('utf-8'))
+        lines.append(line)
+
+    results = lines[-1].strip().decode('utf-8').split()
+    value = 0
+    for result in results:
+        if "VFR" in result:
+            value = float(result.split(":")[-1])
+    if value == 0:
+        return 0
+    else:
+        return -1
+
+    # (
+    #     ffmpeg
+    #     .input(file_name, ss=0, t=60)
+    #     .output("-", vf="vfrdet", f="NULL")
+    #     .run()
+    # )
+    # process = (
+    #     ffmpeg
+    #     .input(file_name)
+    #     .output('pipe:', format='rawvideo', pix_fmt='rgb24')
+    #     .run_async(pipe_stdout=True, pipe_stderr=True)
+    # )
+    # out, err = process.communicate()
+
+    
+
 def main():
 
     parser = argparse.ArgumentParser(description="Kill Digest Maker for Splatoon videos")
@@ -83,7 +127,6 @@ def main():
 
     if int(param["SKIP_CUT_OUT"]) == 0:
         target_files=sorted(glob.glob("./" + args.input_folder_name + "/**.*", recursive=True))
-        print(target_files)
 
         if os.path.isdir('./temp'):
             shutil.rmtree('./temp')
@@ -91,6 +134,21 @@ def main():
         
         if not os.path.isdir('./KillDigestVideos'):
             os.mkdir('./KillDigestVideos')
+
+        for f in target_files:
+            if check_vfr(f) < 0:
+                print("VFR file is detected!!!")
+                target_files.remove(f)
+                cfr_file_name = "./" + args.input_folder_name + "/" +  os.path.splitext(os.path.basename(f))[0] + "_cfr.mp4"
+                if cfr_file_name not in target_files:
+                    (
+                        ffmpeg
+                        .input(f)
+                        .output(cfr_file_name, vsync="cfr", vcodec=param["VIDEO_CODEC"])
+                        .run()
+                    )
+                    target_files.append(cfr_file_name)
+        print(target_files)
 
         max_height_size = 0
         for f in target_files:
@@ -100,14 +158,12 @@ def main():
             if max_height_size < cap.get(cv2.CAP_PROP_FRAME_HEIGHT):
                 max_height_size = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
             cap.release()
+
+            video_info = ffmpeg.probe(f)
+            print(video_info)
         if int(param["MOVIE_SIZE_DESIGNATION"]) == 1:
             max_height_size = int(param["MOVIE_SIZE_HEIGHT"])
-        
-        template = cv2.imread("templates/template.jpg")
-        if int(param["WIN_DETECTION"]) == 1:
-            win_template = cv2.imread("templates/win_template.jpg")
-        if int(param["LOSE_DETECTION"]) == 1:
-            lose_template = cv2.imread("templates/lose_template.jpg")
+
         out_file_count=0
 
         for video_id, video_file_name in enumerate(target_files):
@@ -116,7 +172,24 @@ def main():
                 continue
             fps = cap.get(cv2.CAP_PROP_FPS)
             frame_num = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-            temp_scale = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) / 1080.0
+
+            template = cv2.imread("templates/template.jpg")
+            if int(param["WIN_DETECTION"]) == 1:
+                win_template = cv2.imread("templates/win_template.jpg")
+            if int(param["LOSE_DETECTION"]) == 1:
+                lose_template = cv2.imread("templates/lose_template.jpg")
+
+            temp_scale = float(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) / 1080.0
+
+            template = cv2.resize(template, (int(template.shape[1] * temp_scale), int(template.shape[0] * temp_scale)))
+            if int(param["WIN_DETECTION"]) == 1:
+                win_template = cv2.resize(win_template, (int(win_template.shape[1] * temp_scale), int(win_template.shape[0] * temp_scale)))
+            if int(param["LOSE_DETECTION"]) == 1:
+                lose_template = cv2.resize(lose_template, (int(lose_template.shape[1] * temp_scale), int(lose_template.shape[0] * temp_scale)))
+
+            # cv2.imwrite("template_resize.jpg", template)
+            # cv2.imwrite("win_templatee_resize.jpg", win_template)
+            # cv2.imwrite("lose_template_resize.jpg", lose_template)
 
             key_frames = []
             if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1 or int(param["SHOW_RESULT"]) == 1:
@@ -130,6 +203,10 @@ def main():
                 ret, frame = cap.read()
                 if not ret:
                     break
+
+                # timestamp = cap.get(cv2.CAP_PROP_POS_MSEC)
+                # print("## timestamp {:04.4f}[s] frame/fps {:04.4f}[s] ".format(timestamp/1000.0, i/fps), end="")
+
                 print("[Video {}/{}] Searching kill frame... {:3.2f} [%] done.".format(video_id+1, \
                     len(target_files), i * 100 / frame_num), end='')
 
@@ -204,8 +281,10 @@ def main():
                     new_key_result_frame_group = []
                     for group in key_result_frame_group:
                         if int(param["WIN_DETECTION"]) == 1 or int(param["LOSE_DETECTION"]) == 1:
-                            new_key_result_frame_group.append(group)
-                        new_key_result_frame_group.append([int(x + 5 * fps) for x in group])
+                            if len(group[1:-2]) > 1:
+                                new_key_result_frame_group.append(group[1:-2])
+                        if len(group[:-1]) > 1:
+                            new_key_result_frame_group.append([int(x + 9 * fps) for x in group[:-1]])
                     key_result_frame_group = new_key_result_frame_group
 
                 for local in key_result_frame_group:
@@ -225,11 +304,23 @@ def main():
                 if len(local_key_frames) < float(param["CANDIDATE_FRAME_NUM"]):
                     continue
                 # if int(param["CUT_OUT_ENCORD"]) == 1:
+
+                ## Following codes for vrf format but do not work well...
+                # start_frame = int(local_key_frames[0] - float(param["ADDITIONAL_TIME_BEFORE_KILL"])*fps)
+                # end_frame = int(local_key_frames[-1] + float(param["ADDITIONAL_TIME_AFTER_KILL"])*fps)
+                # stream = ffmpeg.input(video_file_name)
+                # stream = ffmpeg.trim(stream, start_frame=start_frame, end_frame=end_frame)
+                # stream = ffmpeg.output(stream, "temp/" + "{:04d}-".format(out_file_count) + os.path.splitext(os.path.basename(video_file_name))[0].replace(" ", "_") + ".mp4", \
+                #     t=((local_key_frames[-1]-local_key_frames[0])/float(fps) + float(param["ADDITIONAL_TIME_AFTER_KILL"])), \
+                #     filter_complex=("[0:v]scale=-1:" + str(max_height_size) + "[tmp];[tmp]setpts=PTS-STARTPTS[out]"), map="[out]", vcodec=param["VIDEO_CODEC"])
+                # ffmpeg.run(stream)
+
                 stream = ffmpeg.input(video_file_name, ss=(local_key_frames[0]/fps - float(param["ADDITIONAL_TIME_BEFORE_KILL"])),\
                     t=((local_key_frames[-1]-local_key_frames[0])/fps + float(param["ADDITIONAL_TIME_AFTER_KILL"])))
                 stream = ffmpeg.output(stream, "temp/" + "{:04d}-".format(out_file_count) + os.path.splitext(os.path.basename(video_file_name))[0].replace(" ", "_") + ".mp4", \
                     vf="scale=-1:" + str(max_height_size), vcodec=param["VIDEO_CODEC"])
                 ffmpeg.run(stream)
+
                 # else:
                 #     make_py_file(video_file_name, local_key_frames[0]/fps - float(param["ADDITIONAL_TIME_BEFORE_KILL"]),\
                 #         local_key_frames[-1]/fps + float(param["ADDITIONAL_TIME_AFTER_KILL"]))
